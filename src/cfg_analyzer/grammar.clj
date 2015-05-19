@@ -1,6 +1,7 @@
 (ns cfg-analyzer.grammar
   (:require [clj-yaml.core :as yaml]
-            [clojure.set :refer [intersection]]))
+            [clojure.set :refer [intersection]]
+            [cfg-analyzer.utils :refer [in?]]))
 
 (defn read-yaml
   "Reads a yaml file, returns hash"
@@ -10,13 +11,18 @@
 (defn variables-and-terminals-disjoint?
   "Returns true if variabes and terminals are disjoint"
   [variables terminals]
-  (empty? (count (intersection (set variables) (set terminals)))))
+  (empty? (intersection (set variables) (set terminals))))
 
 (defn rules-start-with-terminals?
   "Returns true if all rules start with terminals"
   [rules terminals]
-  (every? (fn [rule] (contains? terminals (first rule))) rules))
-
+  (every? (fn [rule]
+            (let [[variable right-sides] rule]
+              (every? (fn
+                        [right-side]
+                        (in? (apply vector terminals) (first right-side)))
+                      right-sides)))
+          rules))
 
 (defn validate-grammar
   "Raises an exception if the grammar has some problem"

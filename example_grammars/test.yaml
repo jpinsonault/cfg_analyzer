@@ -7,7 +7,7 @@ start: S
 rules:
   S:
     - [a, A, b]
-    - [A]
+    - [b, A]
   A:
     - [x, x]
     - [y]
