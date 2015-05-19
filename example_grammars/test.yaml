@@ -1,0 +1,13 @@
+terminals: [a, b, x, y]
+
+variables: [S, A]
+
+start: S
+
+rules:
+  S:
+    - [a, A, b]
+    - [A]
+  A:
+    - [x, x]
+    - [y]
