@@ -8,7 +8,7 @@ rules:
   S:
     - [a, A, b]
     - [b, A]
-    - [a, b]
+    - [x, b]
   A:
     - [x, x]
     - [y]
