@@ -1,0 +1,28 @@
+accept_strings:
+  - turing machine!
+  - turing machines!
+  - turing? yes please!
+
+reject_strings:
+  - touring machine!
+  - ""
+  - Two ring machine!
+  - Turing machine!
+  - turing? perhaps...
+  - {a^nb^n | n > 0}
+
+terminals: [a, c, e, g, h, i, l, m, n, p, r, s, t, u, y, '!', ' ', ',', '?']
+
+variables: [S, M, E]
+
+start: S
+
+rules:
+  S:
+    - [t, u, r, i, n, g, M]
+  M:
+    - [' ', m, a, c, h, i, n, e, E]
+    - ['?', ' ', y, e, s, ' ', p, l, e, a, s, e, '!']
+  E:
+    - ['!']
+    - [s, '!']

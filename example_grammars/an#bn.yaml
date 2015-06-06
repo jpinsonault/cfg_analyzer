@@ -1,0 +1,27 @@
+accept_strings:
+  - a#b
+  - aa#bb
+  - aaa#bbb
+
+reject_strings:
+  - ab
+  - ""
+  - a#bb
+  - aa#b
+  - "#"
+  - a
+  - b
+  - a#
+
+terminals: [a, b, '#']
+
+variables: [S, H]
+
+start: S
+
+rules:
+  S:
+    - [a, H, b]
+  H:
+    - [a, H, b]
+    - ['#']

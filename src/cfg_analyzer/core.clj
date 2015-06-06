@@ -2,7 +2,6 @@
   (:gen-class)
   (:require [cfg-analyzer.grammar :refer [read-yaml
                                           recognizes?
-                                          recognizes-match?
                                           make-grammar]]
             [cfg-analyzer.validation :refer [validate-grammar]]))
 
@@ -11,4 +10,4 @@
   [grammar-file input-string]
   (let [grammar (make-grammar (read-yaml grammar-file))]
     (validate-grammar grammar)
-    (println (recognizes-match? grammar input-string))))
+    (println (recognizes? grammar input-string))))

@@ -12,10 +12,13 @@
 (defn make-grammar
   "Transforms the yaml into something more suitable"
   [yaml-map]
-  {:variables (set (yaml-map :variables))
-   :terminals (set (yaml-map :terminals))
-   :start (yaml-map :start)
-   :rules (yaml-map :rules)})
+  {:accept_strings (yaml-map :accept_strings)
+   :reject_strings (yaml-map :reject_strings)
+   :variables      (set (yaml-map :variables))
+   ; Ensure all the termals are strings and not integers
+   :terminals      (set (map str (yaml-map :terminals)))
+   :start          (yaml-map :start)
+   :rules          (yaml-map :rules)})
 
 (defn match-rule
   "Returns the rule that matches the given char"
@@ -25,12 +28,11 @@
            rules)))
 
 (defn find-next-rule
-  "docstring"
   [rule-sets next-symbol input-buffer]
   (match-rule (get rule-sets (keyword next-symbol)) (first input-buffer)))
 
-(defn recognizes-match?
-  "Same as recognizes? but uses the match library"
+(defn recognizes?
+  "Returns true if grammar can generate input-string"
   [grammar input-string]
   (let [start-variable (grammar :start)
         rule-sets (grammar :rules)
@@ -62,45 +64,6 @@
                ; Or a terminal?
                [{:is-term true :terms-match true}] (recur (rest stack) (rest input-buffer))
                :else false)))))
-
-(defn recognizes?
-  "Returns true if the grammar can generate the string"
-  [grammar input-string]
-  (let [start-variable (grammar :start)
-        rule-sets (grammar :rules)
-        is-var? (partial contains? (grammar :variables))
-        is-term? (partial contains? (grammar :terminals))]
-
-    (loop [stack (list start-variable)
-           input-buffer (map str input-string)]
-      ; Check for terminating conditions
-      (if (empty? stack)
-        (if-not (empty? input-buffer)
-          ; Stack empty but buffer is not, reject
-          false
-          ; Both are empty, accept
-          true)
-
-        (let [next-symbol (first stack)]
-          (cond
-            (is-var? next-symbol)
-            (let [next-rule (match-rule (get rule-sets (keyword next-symbol)) (first input-buffer))]
-              (if-not (nil? next-rule)
-                ; Rule found. Pop from stack, then add the next rule backwards onto the stack
-                (recur
-                  (concat next-rule (rest stack))
-                  input-buffer)
-                ; No rule found, reject
-                false))
-
-            (is-term? next-symbol)
-            (if (= next-symbol (first input-buffer))
-              ; Remove the char from stack and buffer, loop
-              (recur (rest stack) (rest input-buffer))
-              ; else reject
-              false)))))))
-
-
 
 
 
